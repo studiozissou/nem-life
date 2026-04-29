@@ -21,16 +21,30 @@
   })();
 
   var CONFIG = {
-    version: '2026.4.29.1',
+    version: '2026.4.29.2',
     baseUrlTemplate: 'https://cdn.jsdelivr.net/gh/studiozissou/nem-life@COMMIT/src',
 
-    // CSS (loaded before JS)
+    // Vendor CSS (loaded first, from external CDNs)
+    vendorCss: [
+      'https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.css'
+    ],
+
+    // Project CSS (loaded after vendor CSS)
     css: [
       'global.css'
     ],
 
-    // JS modules (loaded in order)
+    // Vendor JS dependencies (loaded before project modules)
+    dependencies: [
+      'https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.js'
+    ],
+
+    // JS modules (loaded in order after dependencies)
     modules: [
+      'mobile-menu.js',
+      'svg-inline.js',
+      'swiper-init.js',
+      'faq.js',
       'blog-share.js',
       'back-to-top.js'
     ]
@@ -108,12 +122,22 @@
         console.log('%c[NEM] CDN' + (commitMatch ? ' @' + commitMatch[1] : ''), 'color: #7B8F3C; font-weight: bold');
       }
 
-      // Load CSS
+      // Load vendor CSS
+      for (var vi = 0; vi < CONFIG.vendorCss.length; vi++) {
+        await loadStylesheet(CONFIG.vendorCss[vi]);
+      }
+
+      // Load project CSS
       for (var i = 0; i < CONFIG.css.length; i++) {
         await loadStylesheet(baseUrl + '/' + CONFIG.css[i] + '?' + versionParam);
       }
 
-      // Load JS modules
+      // Load vendor JS dependencies
+      for (var di = 0; di < CONFIG.dependencies.length; di++) {
+        await loadScript(CONFIG.dependencies[di]);
+      }
+
+      // Load project JS modules
       for (var j = 0; j < CONFIG.modules.length; j++) {
         await loadScript(baseUrl + '/' + CONFIG.modules[j] + '?' + versionParam);
       }

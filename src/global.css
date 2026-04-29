@@ -220,6 +220,15 @@ html {
    6. NEM COMPONENT STYLES
    ============================================== */
 
+section:has(.section-bg_dark) {
+  color: var(--_token---text-white);
+}
+
+section:has(.section-bg_dark) .h2_subheading {
+  color: var(--_token---text-white);
+  opacity: 0.7;
+}
+
 .button:hover .circle-active {
   width: 0em;
   opacity: 0;
