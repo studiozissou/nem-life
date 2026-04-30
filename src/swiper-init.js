@@ -75,16 +75,33 @@
   });
 
   /* Equalise card heights to the tallest visible slide */
-  const slides = Array.from(
-    articlesEl.querySelectorAll(':scope > .swiper-wrapper > .swiper-slide')
-  );
-  const maxH = Math.max(...slides.map((s) => s.offsetHeight).filter(Boolean));
-  if (maxH) {
+  function equaliseCards() {
+    const slides = Array.from(
+      articlesEl.querySelectorAll(':scope > .swiper-wrapper > .swiper-slide')
+    );
+    /* Reset first so natural heights are measured */
     slides.forEach((s) => {
       const card =
         s.querySelector('.article-card_slide') ||
         s.querySelector('.w-dyn-items');
-      if (card) card.style.minHeight = maxH + 'px';
+      if (card) card.style.height = '';
     });
+    const maxH = Math.max(...slides.map((s) => s.offsetHeight).filter(Boolean));
+    if (maxH) {
+      slides.forEach((s) => {
+        const card =
+          s.querySelector('.article-card_slide') ||
+          s.querySelector('.w-dyn-items');
+        if (card) card.style.height = maxH + 'px';
+      });
+    }
   }
+
+  equaliseCards();
+
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(equaliseCards, 150);
+  });
 })();
